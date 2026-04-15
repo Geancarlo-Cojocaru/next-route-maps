@@ -18,6 +18,7 @@ Proxy executes before routes are rendered. It's particularly useful for implemen
   - [2. Using in Proxy](#2-using-in-proxy)
 - [CI/CD & Automation](#cicd--automation)
 - [Customization](#customization)
+- [License](#license)
 
 ---
 
@@ -89,9 +90,10 @@ export const routeMaps = [
     folderPaths: [
       'src/app/[locale]/(app-presentation)',
       'src/app/[locale]/(auth)',
+      'src/app/[locale]/products',
     ],
     // Manual overrides or routes that don't follow the page.tsx convention
-    staticRoutes: ['/', '/healthz'],
+    staticRoutes: ['/', '/some-static-page'],
   },
 ];
 ```
@@ -137,6 +139,84 @@ export default function proxy(request: NextRequest) {
 }
 ```
 
+### 3. Example Output
+
+#### Sample Directory Structure
+
+If your `app` directory looks like this:
+
+```text
+src/app/[locale]/
+├── page.tsx                # => /
+├── (app-presentation)/
+│   ├── about/
+│   │   └── page.tsx        # => /about
+│   └── contact/
+│       └── page.tsx        # => /contact
+├── (auth)/
+│   ├── signin/
+│   │   └── page.tsx        # => /signin
+│   └── forgot-password/
+│       └── page.tsx        # => /forgot-password
+├── (auth-required)/
+│   ├── dashboard/
+│   │   └── page.tsx        # => /dashboard
+│   └── settings/
+│       └── page.tsx        # => /settings
+└── products/
+    ├── [slug]/
+    │   └── page.tsx        # => /products/:slug
+    └── categories/
+        └── [[...filter]]/
+            └── page.tsx    # => /products/categories{/*filter}
+```
+
+#### Configuration Example
+
+Define your public routes in `route-maps.config.mjs`:
+
+```javascript
+export const routeMaps = [
+  {
+    outputPath: 'src/next-route-maps/public-routes.json',
+    folderPaths: [
+      'src/app/[locale]/(app-presentation)',
+      'src/app/[locale]/(auth)',
+      'src/app/[locale]/products',
+    ],
+    staticRoutes: ['/'],
+  },
+];
+```
+
+#### Generated JSON Map
+
+The generator will output a simple array of strings where each string is a `path-to-regexp` pattern.
+
+**Public Routes Map:**
+
+```json
+[
+  "/",
+  "/about",
+  "/contact",
+  "/signin",
+  "/forgot-password",
+  "/products/:slug",
+  "/products/categories{/*filter}"
+]
+```
+
+**Private Routes Map:**
+*(If you were to scan `(auth-required)` folders)*
+
+```json
+[
+  "/dashboard",
+  "/settings"
+]
+```
+
 ---
 
 ## CI/CD & Automation
@@ -164,3 +244,9 @@ Since this is a copy-paste utility, you are encouraged to modify it:
 - **i18n Support:** If your project uses different locales, update the `LOCALES` array in `parse-route-maps.ts` to properly strip locale prefixes before matching.
 - **Filtering:** Modify `containsPageTsx` in `index.mjs` if you want to include API routes (`route.ts`) or other file types.
 - **Output Format:** You can change `generateSingleRouteMap` to output TypeScript files instead of JSON if you prefer static types for your maps.
+
+---
+
+## License
+
+MIT
