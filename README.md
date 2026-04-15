@@ -92,7 +92,7 @@ export const routeMaps = [
       'src/app/[locale]/(auth)',
       'src/app/[locale]/products',
     ],
-    // Manual overrides or routes that don't follow the page.tsx convention
+    // Root, single or some other pages
     staticRoutes: ['/', '/some-static-page'],
   },
 ];
