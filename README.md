@@ -1,10 +1,6 @@
 # Next.js Route Maps Utility
 
-This utility provides a robust way to generate JSON maps of your Next.js `app` directory routes. These maps are primarily used in **Proxy** to perform highly efficient, pattern-based route matching (e.g., for authentication, authorization, or redirects) without having to manually maintain a list of public/private paths.
-
-The `proxy.js|ts` file is used to write Proxy and run code on the server before a request is completed. Then, based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.
-
-Proxy executes before routes are rendered. It's particularly useful for implementing custom server-side logic like authentication, logging, or handling redirects.
+This utility provides a robust way to generate JSON maps of your Next.js `app` directory routes. These maps should be primarily used in `proxy.js|ts` (former `middleware`) to perform highly efficient, pattern-based route matching (e.g., for authentication, authorization, or redirects) without having to manually maintain a list of public/private paths.
 
 ## Table of Contents
 
@@ -15,7 +11,7 @@ Proxy executes before routes are rendered. It's particularly useful for implemen
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [1. Generating the Maps](#1-generating-the-maps)
-  - [2. Using in Proxy](#2-using-in-proxy)
+  - [2. Using in proxy.ts](#2-using-in-proxyts)
 - [CI/CD & Automation](#cicd--automation)
 - [Customization](#customization)
 - [License](#license)
@@ -34,19 +30,31 @@ In Next.js, managing complex route access can be error-prone when done manually.
 
 ## Installation & Setup
 
-This is an internal utility designed to be copy-pasted and modified. 
+Copy the utility into your project using one of the following methods:
+
+**Default path (`src/next-route-maps`):**
+
+```bash
+git clone --depth 1 https://github.com/Geancarlo-Cojocaru/next-route-maps.git src/next-route-maps && rm -rf src/next-route-maps/.git
+```
+
+**Custom path:**
+
+```bash
+git clone --depth 1 https://github.com/Geancarlo-Cojocaru/next-route-maps.git your/custom/path && rm -rf your/custom/path/.git
+```
 
 ### Dependencies
 
 Ensure your project has `path-to-regexp` installed:
 
 ```bash
-npm install path-to-regexp
+npm install -D path-to-regexp
 ```
 
 ### File Structure
 
-Place the utility in your project (e.g., `src/next-route-maps`):
+After copying, the utility files will be in your chosen directory (e.g., `src/next-route-maps`):
 
 ```text
 src/next-route-maps/
@@ -84,15 +92,15 @@ Edit `route-maps.config.mjs` to define which parts of your `app` directory shoul
 ```javascript
 export const routeMaps = [
   {
-    // Where the resulting JSON will be saved
+    // Example of where the resulting JSON will be saved
     outputPath: 'src/next-route-maps/public-routes.json',
-    // Folders to scan (relative to project root)
+    // Example of folders to scan (relative to project root)
     folderPaths: [
       'src/app/[locale]/(app-presentation)',
       'src/app/[locale]/(auth)',
       'src/app/[locale]/products',
     ],
-    // Root, single or some other pages
+    // Example for root or single pages
     staticRoutes: ['/', '/some-static-page'],
   },
 ];
@@ -119,7 +127,7 @@ Run it manually during development when you add new routes:
 npm run route-maps:generate
 ```
 
-### 2. Using in Proxy
+### 2. Using in `proxy.ts`
 
 Import the runtime utility and the generated JSON in your proxy:
 
