@@ -1,6 +1,8 @@
 # Next.js Route Maps Utility
 
-This utility provides a robust way to generate JSON maps of your Next.js `app` directory routes. These maps should be primarily used in `proxy.js|ts` (former `middleware`) to perform highly efficient, pattern-based route matching (e.g., for authentication, authorization, or redirects) without having to manually maintain a list of public/private paths.
+This tool is essentially a Node.js tree parser that reads the folder structure into a JSON route map, following Next.js conventions. This utility provides a robust way to generate JSON maps of your Next.js `app` directory routes.
+
+These route maps are primarily intended for use in `proxy.js|ts` (formerly `middleware`) to perform efficient, pattern-based route matching (e.g., for authentication, authorization, or redirects) without the need for manual maintenance of public/private path lists.
 
 ## Table of Contents
 
